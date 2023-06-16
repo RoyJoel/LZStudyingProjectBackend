@@ -1,0 +1,74 @@
+syntax = "proto3";  //指定语法格式
+package proto;  //指定生成的 xx.pb.go 的包名字；
+
+option go_package = "../proto"; //go语言下指定包的名称
+
+//service接口
+service PlayerInfoService {
+  //rpc接口中的方法
+rpc AddPlayer(PlayerInfoRequest) returns (PlayerInfoResponse){}
+rpc	UpdatePlayer(PlayerInfoRequest) returns (PlayerInfoResponse){}
+rpc	GetPlayerInfo(PlayerInfoRequest) returns (PlayerInfoResponse){}
+rpc	SearchPlayer(PlayerInfoRequest) returns (PlayerInfoResponse){}
+rpc	AddFriend(PlayerInfoRequest) returns (PlayerInfoResponse){}
+rpc	DeleteFriend(PlayerInfoRequest) returns (PlayerInfoResponse){}
+}
+
+//请求的数据格式 message 对应生成的代码中的struct，[修饰符] 类型 字段名 = 标识符
+message PlayerInfoRequest{
+  int64 id = 1;
+  string name = 2 ;
+  string loginName = 3;
+  []byte icon = 4;
+  string sex = 5;
+  int64 age = 6;
+  int64 yearsPlayed = 7;
+  float32 height = 8;
+  float32 width = 9;
+  string grip = 10;
+  string backhand = 11;
+  int Points = 12;
+	bool IsAdult = 13;
+	int CareerStatsId = 14;
+	repeated string Friends = 15;
+}
+
+message StatsInfoRequest{
+  int64 id = 1;
+  int64 aces = 2;
+  int64 doubleFaults = 3;
+  int64 firstServePoints = 4;
+  int64 firstServePointsIn = 5;
+  int64 firstServePointsWon = 6;
+  int64 secondServePoints = 7;
+  int64 secondServePointsWon = 8;
+  int64 breakPointsFaced = 9;
+  int64 breakPointsSaved = 10;
+  int64 serveGamesPlayed = 11;
+  int64 serveGamesWon = 12;
+  int64 totalServePointsWon = 13;
+  int64 firstServeReturnPoints = 14;
+  int64 firstServeReturnAces = 15;
+  int64 firstServeReturnPointsWon = 16;
+  int64 secondServeReturnPoints = 17;
+  int64 secondServeReturnAces = 18;
+  int64 secondServeReturnPointsWon = 19;
+  int64 breakPointsOpportunities = 20;
+  int64 breakPointsConverted = 21;
+  int64 returnGamesPlayed = 22;
+  int64 returnGamesWon = 23;
+  int64 totalReturnPointsWon = 24;
+  int64 totalPointsWon = 25;
+  int64 netPoints = 26;
+  int64 unforcedErrors = 27;
+  int64 forehandWinners = 28;
+  int64 backhandWinners = 29;
+  string playerLoginName = 30;
+}
+
+message PlayerInfoResponse{
+  int64 code = 1;
+  string msg = 2;
+  int64 count = 3;
+  string data = 4;
+}
