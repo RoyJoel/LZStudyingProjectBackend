@@ -6,22 +6,22 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/RoyJoel/LZStudyingProject/package/dao/impl"
-	"github.com/RoyJoel/LZStudyingProject/package/middleware"
-	"github.com/RoyJoel/LZStudyingProject/package/model"
-	"github.com/RoyJoel/LZStudyingProject/package/utils"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/dao/impl"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/middleware"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/model"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/utils"
 	"github.com/gin-gonic/gin"
 )
 
-type TennisMomentControllerImpl struct {
-	dao *impl.TennisMomentDaoImpl
+type LZControllerImpl struct {
+	dao *impl.LZDaoImpl
 }
 
-func NewTennisMomentControllerImpl() *TennisMomentControllerImpl {
-	return &TennisMomentControllerImpl{dao: impl.NewTennisMomentDaoImpl()}
+func NewLZControllerImpl() *LZControllerImpl {
+	return &LZControllerImpl{dao: impl.NewLZDaoImpl()}
 }
 
-func (impl TennisMomentControllerImpl) AddPlayer(c *gin.Context) {
+func (impl LZControllerImpl) AddPlayer(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	player := model.Player{}
@@ -34,7 +34,7 @@ func (impl TennisMomentControllerImpl) AddPlayer(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) SignUp(c *gin.Context) {
+func (impl LZControllerImpl) SignUp(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	User := model.User{}
@@ -54,7 +54,7 @@ func (impl TennisMomentControllerImpl) SignUp(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": result})
 }
 
-func (impl TennisMomentControllerImpl) UpdateUser(c *gin.Context) {
+func (impl LZControllerImpl) UpdateUser(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	User := model.User{}
@@ -67,7 +67,7 @@ func (impl TennisMomentControllerImpl) UpdateUser(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": user})
 }
 
-func (impl TennisMomentControllerImpl) Auth(c *gin.Context) {
+func (impl LZControllerImpl) Auth(c *gin.Context) {
 	auth := c.Request.Header.Get("Authorization")
 	claims, error := middleware.ParseToken(auth)
 	type authResponse struct {
@@ -83,7 +83,7 @@ func (impl TennisMomentControllerImpl) Auth(c *gin.Context) {
 	}
 }
 
-func (impl TennisMomentControllerImpl) SignIn(c *gin.Context) {
+func (impl LZControllerImpl) SignIn(c *gin.Context) {
 
 	type SignInRequest struct {
 		LoginName string `json:"loginName"`
@@ -104,7 +104,7 @@ func (impl TennisMomentControllerImpl) SignIn(c *gin.Context) {
 
 }
 
-func (impl TennisMomentControllerImpl) ResetPassword(c *gin.Context) {
+func (impl LZControllerImpl) ResetPassword(c *gin.Context) {
 
 	type resetRequest struct {
 		LoginName string `json:"loginName"`
@@ -122,7 +122,7 @@ func (impl TennisMomentControllerImpl) ResetPassword(c *gin.Context) {
 
 }
 
-func (impl TennisMomentControllerImpl) SearchPlayer(c *gin.Context) {
+func (impl LZControllerImpl) SearchPlayer(c *gin.Context) {
 
 	type SearchPlayerRequest struct {
 		LoginName string `json:"loginName"`
@@ -140,7 +140,7 @@ func (impl TennisMomentControllerImpl) SearchPlayer(c *gin.Context) {
 
 }
 
-func (impl TennisMomentControllerImpl) UpdatePlayer(c *gin.Context) {
+func (impl LZControllerImpl) UpdatePlayer(c *gin.Context) {
 
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
@@ -154,7 +154,7 @@ func (impl TennisMomentControllerImpl) UpdatePlayer(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": player})
 }
 
-func (impl TennisMomentControllerImpl) GetPlayerInfo(c *gin.Context) {
+func (impl LZControllerImpl) GetPlayerInfo(c *gin.Context) {
 	type SearchPlayerRequest struct {
 		LoginName string `json:"loginName"`
 	}
@@ -173,7 +173,7 @@ func (impl TennisMomentControllerImpl) GetPlayerInfo(c *gin.Context) {
 	}
 }
 
-func (impl TennisMomentControllerImpl) AddFriend(c *gin.Context) {
+func (impl LZControllerImpl) AddFriend(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	relationship := model.Relationship{}
@@ -186,7 +186,7 @@ func (impl TennisMomentControllerImpl) AddFriend(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": result})
 }
 
-func (impl TennisMomentControllerImpl) DeleteFriend(c *gin.Context) {
+func (impl LZControllerImpl) DeleteFriend(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	relationship := model.Relationship{}
@@ -199,7 +199,7 @@ func (impl TennisMomentControllerImpl) DeleteFriend(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": result})
 }
 
-func (impl TennisMomentControllerImpl) GetAllFriends(c *gin.Context) {
+func (impl LZControllerImpl) GetAllFriends(c *gin.Context) {
 	type SearchPlayerRequest struct {
 		Id int64 `json:"id"`
 	}
@@ -213,7 +213,7 @@ func (impl TennisMomentControllerImpl) GetAllFriends(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": player})
 }
 
-func (impl TennisMomentControllerImpl) SearchFriend(c *gin.Context) {
+func (impl LZControllerImpl) SearchFriend(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	relationship := model.Relationship{}
@@ -226,7 +226,7 @@ func (impl TennisMomentControllerImpl) SearchFriend(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) GetMusicInfos(c *gin.Context) {
+func (impl LZControllerImpl) GetMusicInfos(c *gin.Context) {
 	type SearchPlayerRequest struct {
 		Ids utils.IntMatrix `json:"ids"`
 	}
@@ -244,7 +244,7 @@ func (impl TennisMomentControllerImpl) GetMusicInfos(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) AddOrder(c *gin.Context) {
+func (impl LZControllerImpl) AddOrder(c *gin.Context) {
 
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
@@ -258,7 +258,7 @@ func (impl TennisMomentControllerImpl) AddOrder(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) UpdateOrder(c *gin.Context) {
+func (impl LZControllerImpl) UpdateOrder(c *gin.Context) {
 
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
@@ -272,7 +272,7 @@ func (impl TennisMomentControllerImpl) UpdateOrder(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) DeleteOrder(c *gin.Context) {
+func (impl LZControllerImpl) DeleteOrder(c *gin.Context) {
 	type DeleteOrderRequest struct {
 		Id int64 `json:"id"`
 	}
@@ -286,7 +286,7 @@ func (impl TennisMomentControllerImpl) DeleteOrder(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) AddAddress(c *gin.Context) {
+func (impl LZControllerImpl) AddAddress(c *gin.Context) {
 
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
@@ -300,7 +300,7 @@ func (impl TennisMomentControllerImpl) AddAddress(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) UpdateAddress(c *gin.Context) {
+func (impl LZControllerImpl) UpdateAddress(c *gin.Context) {
 
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
@@ -314,7 +314,7 @@ func (impl TennisMomentControllerImpl) UpdateAddress(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) GetAddressInfos(c *gin.Context) {
+func (impl LZControllerImpl) GetAddressInfos(c *gin.Context) {
 	type SearchPlayerRequest struct {
 		Ids utils.IntMatrix `json:"ids"`
 	}
@@ -333,7 +333,7 @@ func (impl TennisMomentControllerImpl) GetAddressInfos(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) DeleteAddress(c *gin.Context) {
+func (impl LZControllerImpl) DeleteAddress(c *gin.Context) {
 	type DeleteAddressRequest struct {
 		Id int64 `json:"id"`
 	}
@@ -348,7 +348,7 @@ func (impl TennisMomentControllerImpl) DeleteAddress(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) GetOrderInfosByUserId(c *gin.Context) {
+func (impl LZControllerImpl) GetOrderInfosByUserId(c *gin.Context) {
 	type SearchPlayerRequest struct {
 		Id int64 `json:"id"`
 	}
@@ -363,7 +363,7 @@ func (impl TennisMomentControllerImpl) GetOrderInfosByUserId(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) GetCartInfo(c *gin.Context) {
+func (impl LZControllerImpl) GetCartInfo(c *gin.Context) {
 	type SearchPlayerRequest struct {
 		Id int64 `json:"id"`
 	}
@@ -378,7 +378,7 @@ func (impl TennisMomentControllerImpl) GetCartInfo(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) AddBillToCart(c *gin.Context) {
+func (impl LZControllerImpl) AddBillToCart(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	bill := model.Bill{}
@@ -391,7 +391,7 @@ func (impl TennisMomentControllerImpl) AddBillToCart(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) DeleteBillInCart(c *gin.Context) {
+func (impl LZControllerImpl) DeleteBillInCart(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	bill := model.Bill{}
@@ -404,7 +404,7 @@ func (impl TennisMomentControllerImpl) DeleteBillInCart(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) AssignCartForUser(c *gin.Context) {
+func (impl LZControllerImpl) AssignCartForUser(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	order := model.OrderResponse{}
@@ -418,7 +418,7 @@ func (impl TennisMomentControllerImpl) AssignCartForUser(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) AddCommodity(c *gin.Context) {
+func (impl LZControllerImpl) AddCommodity(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	commodity := model.CommodityResponse{}
@@ -431,7 +431,7 @@ func (impl TennisMomentControllerImpl) AddCommodity(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) DeleteCommodity(c *gin.Context) {
+func (impl LZControllerImpl) DeleteCommodity(c *gin.Context) {
 	type DeleteCommodityRequest struct {
 		Id int64 `json:"id"`
 	}
@@ -446,7 +446,7 @@ func (impl TennisMomentControllerImpl) DeleteCommodity(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) AddOption(c *gin.Context) {
+func (impl LZControllerImpl) AddOption(c *gin.Context) {
 	type AddOptionRequest struct {
 		Option model.OptionResponse `json:"option"`
 		ComId  int64                `json:"comId"`
@@ -458,7 +458,7 @@ func (impl TennisMomentControllerImpl) AddOption(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) UpdateOption(c *gin.Context) {
+func (impl LZControllerImpl) UpdateOption(c *gin.Context) {
 	type UpdateOptionRequest struct {
 		Option model.OptionResponse `json:"option"`
 		ComId  int64                `json:"comId"`
@@ -470,7 +470,7 @@ func (impl TennisMomentControllerImpl) UpdateOption(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) DeleteOption(c *gin.Context) {
+func (impl LZControllerImpl) DeleteOption(c *gin.Context) {
 	type DeleteOptionRequest struct {
 		Id int64 `json:"id"`
 	}
@@ -485,7 +485,7 @@ func (impl TennisMomentControllerImpl) DeleteOption(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) UpdateCommodity(c *gin.Context) {
+func (impl LZControllerImpl) UpdateCommodity(c *gin.Context) {
 	body := c.Request.Body
 	bytes, err := ioutil.ReadAll(body)
 	commodity := model.CommodityResponse{}
@@ -498,14 +498,14 @@ func (impl TennisMomentControllerImpl) UpdateCommodity(c *gin.Context) {
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) GetAllCommodities(c *gin.Context) {
+func (impl LZControllerImpl) GetAllCommodities(c *gin.Context) {
 
 	res := impl.dao.GetAllCommodities(c)
 
 	c.JSON(200, map[string]interface{}{"code": 0, "msg": "", "count": 0, "data": res})
 }
 
-func (impl TennisMomentControllerImpl) GetAllOrders(c *gin.Context) {
+func (impl LZControllerImpl) GetAllOrders(c *gin.Context) {
 
 	res := impl.dao.GetAllOrders(c)
 

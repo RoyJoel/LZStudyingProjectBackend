@@ -2,8 +2,8 @@ package test
 
 // import (
 // 	"context"
-// 	"github.com/RoyJoel/LZStudyingProject/package/dao/impl"
-// 	"github.com/RoyJoel/LZStudyingProject/package/model"
+// 	"github.com/RoyJoel/LZStudyingProjectBackend/package/dao/impl"
+// 	"github.com/RoyJoel/LZStudyingProjectBackend/package/model"
 // 	"fmt"
 // 	"testing"
 // )

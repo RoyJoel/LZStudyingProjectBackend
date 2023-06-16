@@ -5,7 +5,7 @@ import (
 	// "fmt"
 	"log"
 
-	"github.com/RoyJoel/LZStudyingProject/proto"
+	"github.com/RoyJoel/LZStudyingProjectBackend/proto"
 	"google.golang.org/grpc"
 )
 

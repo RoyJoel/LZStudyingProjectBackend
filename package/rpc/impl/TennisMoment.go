@@ -4,19 +4,19 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/RoyJoel/LZStudyingProject/package/dao/impl"
-	"github.com/RoyJoel/LZStudyingProject/package/model"
-	"github.com/RoyJoel/LZStudyingProject/proto"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/dao/impl"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/model"
+	"github.com/RoyJoel/LZStudyingProjectBackend/proto"
 )
 
-type TennisMomentRPCImpl struct {
-	dao *impl.TennisMomentDaoImpl
+type LZRPCImpl struct {
+	dao *impl.LZDaoImpl
 }
 
-func NewTennisMomentControllerImpl() *TennisMomentRPCImpl {
-	return &TennisMomentRPCImpl{dao: impl.NewTennisMomentDaoImpl()}
+func NewLZControllerImpl() *LZRPCImpl {
+	return &LZRPCImpl{dao: impl.NewLZDaoImpl()}
 }
-func (impl *TennisMomentRPCImpl) AddPlayer(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
+func (impl *LZRPCImpl) AddPlayer(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
 	Id := request.GetId()
 	LoginName := request.GetLoginName()
 	Name := request.GetName()
@@ -44,7 +44,7 @@ func (impl *TennisMomentRPCImpl) AddPlayer(ctx context.Context, request *proto.P
 // 	return &proto.PlayerInfoResponse{Code: 0, Msg: "", Count: 1, Data: string(info)}, nil
 // }
 
-func (impl *TennisMomentRPCImpl) UpdatePlayer(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
+func (impl *LZRPCImpl) UpdatePlayer(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
 	Id := request.GetId()
 	LoginName := request.GetLoginName()
 	Name := request.GetName()
@@ -70,27 +70,27 @@ func (impl *TennisMomentRPCImpl) UpdatePlayer(ctx context.Context, request *prot
 // 	return &proto.PlayerInfoResponse{Code: 0, Msg: "", Count: 1, Data: "true"}, nil
 // }
 
-func (impl *TennisMomentRPCImpl) SearchPlayer(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
+func (impl *LZRPCImpl) SearchPlayer(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
 	id := request.GetId()
 	Players, _ := impl.dao.GetPlayerInfo(ctx, id)
 	infos, _ := json.Marshal(Players)
 	return &proto.PlayerInfoResponse{Code: 0, Msg: "", Count: 1, Data: string(infos)}, nil
 }
 
-func (impl *TennisMomentRPCImpl) GetPlayerInfo(ctx context.Context, req *proto.PlayerInfoRequest) (resp *proto.PlayerInfoResponse, err error) {
+func (impl *LZRPCImpl) GetPlayerInfo(ctx context.Context, req *proto.PlayerInfoRequest) (resp *proto.PlayerInfoResponse, err error) {
 	id := req.GetId()
 	Players, _ := impl.dao.GetPlayerInfo(ctx, id)
 	infos, _ := json.Marshal(Players)
 	return &proto.PlayerInfoResponse{Code: 0, Msg: "", Count: 1, Data: string(infos)}, nil
 }
 
-func (impl *TennisMomentRPCImpl) AddFriend(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
+func (impl *LZRPCImpl) AddFriend(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
 	id := request.GetId()
 	Players, _ := impl.dao.GetPlayerInfo(ctx, id)
 	infos, _ := json.Marshal(Players)
 	return &proto.PlayerInfoResponse{Code: 0, Msg: "", Count: 1, Data: string(infos)}, nil
 }
-func (impl *TennisMomentRPCImpl) DeleteFriend(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
+func (impl *LZRPCImpl) DeleteFriend(ctx context.Context, request *proto.PlayerInfoRequest) (*proto.PlayerInfoResponse, error) {
 	id := request.GetId()
 	Players, _ := impl.dao.GetPlayerInfo(ctx, id)
 	infos, _ := json.Marshal(Players)

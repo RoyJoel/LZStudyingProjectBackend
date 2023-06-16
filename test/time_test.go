@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/RoyJoel/LZStudyingProject/package/utils"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/utils"
 )
 
 func TestS(t *testing.T) {

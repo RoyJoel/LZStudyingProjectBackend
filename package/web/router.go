@@ -1,9 +1,9 @@
 package web
 
 import (
-	"github.com/RoyJoel/LZStudyingProject/package/config"
-	"github.com/RoyJoel/LZStudyingProject/package/web/controller"
-	"github.com/RoyJoel/LZStudyingProject/package/web/interceptor"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/config"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/web/controller"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/web/interceptor"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,88 +16,88 @@ func RunHttp() {
 
 	authInfo := r.Group("/")
 	{
-		authInfo.GET("auth", controller.NewTennisMomentControllerImpl().Auth)
+		authInfo.GET("auth", controller.NewLZControllerImpl().Auth)
 	}
 
 	//路由组
 	userInfo := r.Group("/user")
 	{
-		userInfo.POST("/signIn", controller.NewTennisMomentControllerImpl().SignIn)
-		userInfo.POST("/signUp", controller.NewTennisMomentControllerImpl().SignUp)
-		userInfo.POST("/resetPassword", controller.NewTennisMomentControllerImpl().ResetPassword)
-		userInfo.POST("/update", controller.NewTennisMomentControllerImpl().UpdateUser)
+		userInfo.POST("/signIn", controller.NewLZControllerImpl().SignIn)
+		userInfo.POST("/signUp", controller.NewLZControllerImpl().SignUp)
+		userInfo.POST("/resetPassword", controller.NewLZControllerImpl().ResetPassword)
+		userInfo.POST("/update", controller.NewLZControllerImpl().UpdateUser)
 	}
 
 	playerInfo := r.Group("/player")
 	{
-		playerInfo.POST("/update", controller.NewTennisMomentControllerImpl().UpdatePlayer)
-		playerInfo.POST("/getInfo", controller.NewTennisMomentControllerImpl().GetPlayerInfo)
-		playerInfo.POST("/add", controller.NewTennisMomentControllerImpl().AddPlayer)
-		playerInfo.POST("/search", controller.NewTennisMomentControllerImpl().SearchPlayer)
+		playerInfo.POST("/update", controller.NewLZControllerImpl().UpdatePlayer)
+		playerInfo.POST("/getInfo", controller.NewLZControllerImpl().GetPlayerInfo)
+		playerInfo.POST("/add", controller.NewLZControllerImpl().AddPlayer)
+		playerInfo.POST("/search", controller.NewLZControllerImpl().SearchPlayer)
 	}
 
 	friendInfo := r.Group("/friend")
 	{
-		friendInfo.POST("/add", controller.NewTennisMomentControllerImpl().AddFriend)
-		friendInfo.POST("/search", controller.NewTennisMomentControllerImpl().SearchFriend)
-		friendInfo.POST("/delete", controller.NewTennisMomentControllerImpl().DeleteFriend)
-		friendInfo.POST("/getAll", controller.NewTennisMomentControllerImpl().GetAllFriends)
+		friendInfo.POST("/add", controller.NewLZControllerImpl().AddFriend)
+		friendInfo.POST("/search", controller.NewLZControllerImpl().SearchFriend)
+		friendInfo.POST("/delete", controller.NewLZControllerImpl().DeleteFriend)
+		friendInfo.POST("/getAll", controller.NewLZControllerImpl().GetAllFriends)
 	}
 
 	clubInfo := r.Group("/music")
 	{
-		clubInfo.POST("/getInfos", controller.NewTennisMomentControllerImpl().GetMusicInfos)
+		clubInfo.POST("/getInfos", controller.NewLZControllerImpl().GetMusicInfos)
 	}
 
 	orderInfo := r.Group("/order")
 	{
-		orderInfo.POST("/add", controller.NewTennisMomentControllerImpl().AddOrder)
-		orderInfo.POST("/delete", controller.NewTennisMomentControllerImpl().DeleteOrder)
-		// orderInfo.POST("/search", controller.NewTennisMomentControllerImpl().GetOrderInfos)
-		orderInfo.POST("/update", controller.NewTennisMomentControllerImpl().UpdateOrder)
-		orderInfo.POST("/getInfos", controller.NewTennisMomentControllerImpl().GetOrderInfosByUserId)
-		orderInfo.GET("/getAll", controller.NewTennisMomentControllerImpl().GetAllOrders)
+		orderInfo.POST("/add", controller.NewLZControllerImpl().AddOrder)
+		orderInfo.POST("/delete", controller.NewLZControllerImpl().DeleteOrder)
+		// orderInfo.POST("/search", controller.NewLZControllerImpl().GetOrderInfos)
+		orderInfo.POST("/update", controller.NewLZControllerImpl().UpdateOrder)
+		orderInfo.POST("/getInfos", controller.NewLZControllerImpl().GetOrderInfosByUserId)
+		orderInfo.GET("/getAll", controller.NewLZControllerImpl().GetAllOrders)
 	}
 
 	addressInfo := r.Group("/address")
 	{
-		addressInfo.POST("/add", controller.NewTennisMomentControllerImpl().AddAddress)
-		addressInfo.POST("/delete", controller.NewTennisMomentControllerImpl().DeleteAddress)
-		addressInfo.POST("/getInfos", controller.NewTennisMomentControllerImpl().GetAddressInfos)
-		addressInfo.POST("/update", controller.NewTennisMomentControllerImpl().UpdateAddress)
+		addressInfo.POST("/add", controller.NewLZControllerImpl().AddAddress)
+		addressInfo.POST("/delete", controller.NewLZControllerImpl().DeleteAddress)
+		addressInfo.POST("/getInfos", controller.NewLZControllerImpl().GetAddressInfos)
+		addressInfo.POST("/update", controller.NewLZControllerImpl().UpdateAddress)
 	}
 
 	cartInfo := r.Group("/cart")
 	{
-		cartInfo.POST("/getInfo", controller.NewTennisMomentControllerImpl().GetCartInfo)
-		cartInfo.POST("/addBill", controller.NewTennisMomentControllerImpl().AddBillToCart)
-		cartInfo.POST("/deleteBill", controller.NewTennisMomentControllerImpl().DeleteBillInCart)
-		cartInfo.POST("/assign", controller.NewTennisMomentControllerImpl().AssignCartForUser)
+		cartInfo.POST("/getInfo", controller.NewLZControllerImpl().GetCartInfo)
+		cartInfo.POST("/addBill", controller.NewLZControllerImpl().AddBillToCart)
+		cartInfo.POST("/deleteBill", controller.NewLZControllerImpl().DeleteBillInCart)
+		cartInfo.POST("/assign", controller.NewLZControllerImpl().AssignCartForUser)
 	}
 
 	commodityInfo := r.Group("/commodity")
 	{
-		commodityInfo.POST("/add", controller.NewTennisMomentControllerImpl().AddCommodity)
-		commodityInfo.POST("/delete", controller.NewTennisMomentControllerImpl().DeleteCommodity)
-		// commodityInfo.POST("/search", controller.NewTennisMomentControllerImpl().getCommodityInfo)
-		commodityInfo.POST("/update", controller.NewTennisMomentControllerImpl().UpdateCommodity)
-		commodityInfo.GET("/getAll", controller.NewTennisMomentControllerImpl().GetAllCommodities)
+		commodityInfo.POST("/add", controller.NewLZControllerImpl().AddCommodity)
+		commodityInfo.POST("/delete", controller.NewLZControllerImpl().DeleteCommodity)
+		// commodityInfo.POST("/search", controller.NewLZControllerImpl().getCommodityInfo)
+		commodityInfo.POST("/update", controller.NewLZControllerImpl().UpdateCommodity)
+		commodityInfo.GET("/getAll", controller.NewLZControllerImpl().GetAllCommodities)
 	}
 
 	optionInfo := r.Group("/option")
 	{
-		optionInfo.POST("/add", controller.NewTennisMomentControllerImpl().AddOption)
-		optionInfo.POST("/update", controller.NewTennisMomentControllerImpl().UpdateOption)
-		optionInfo.POST("/delete", controller.NewTennisMomentControllerImpl().DeleteOption)
+		optionInfo.POST("/add", controller.NewLZControllerImpl().AddOption)
+		optionInfo.POST("/update", controller.NewLZControllerImpl().UpdateOption)
+		optionInfo.POST("/delete", controller.NewLZControllerImpl().DeleteOption)
 
 	}
 
 	// billInfo := r.Group("/bill")
 	// {
-	// billInfo.POST("/add", controller.NewTennisMomentControllerImpl().AddBill)
-	// billInfo.POST("/delete", controller.NewTennisMomentControllerImpl().DeleteBill)
-	// billInfo.POST("/search", controller.NewTennisMomentControllerImpl().getBillInfo)
-	// billInfo.POST("/update", controller.NewTennisMomentControllerImpl().UpdateBill)
+	// billInfo.POST("/add", controller.NewLZControllerImpl().AddBill)
+	// billInfo.POST("/delete", controller.NewLZControllerImpl().DeleteBill)
+	// billInfo.POST("/search", controller.NewLZControllerImpl().getBillInfo)
+	// billInfo.POST("/update", controller.NewLZControllerImpl().UpdateBill)
 	// }
 
 	r.Run(":8080")

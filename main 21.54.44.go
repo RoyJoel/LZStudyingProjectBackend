@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/RoyJoel/LZStudyingProject/cmd/grpc"
-	"github.com/RoyJoel/LZStudyingProject/cmd/web"
+	"github.com/RoyJoel/LZStudyingProjectBackend/cmd/web"
+	"github.com/RoyJoel/LZStudyingProjectBackendBackend/cmd/grpc"
 )
 
 func main() {

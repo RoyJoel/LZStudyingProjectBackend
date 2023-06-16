@@ -4,16 +4,16 @@ import (
 	"context"
 	"time"
 
-	"github.com/RoyJoel/LZStudyingProject/package/config"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/config"
 
 	"github.com/go-redis/redis/v8"
 )
 
-type TennisMomentCacheDAOImpl struct {
+type LZCacheDAOImpl struct {
 	db *redis.Client
 }
 
-type TennisMomentCacheDAO interface {
+type LZCacheDAO interface {
 	// set一个
 	AddDeviceJwtMapping(client *redis.Client, deviceID string, jwt string) error
 	// 根据ID获取一个
@@ -22,8 +22,8 @@ type TennisMomentCacheDAO interface {
 	GetDeviceIDByJwt(ctx context.Context, client *redis.Client, jwt string) (string, error)
 }
 
-func NewTennisMomentCacheDAOImpl() *TennisMomentCacheDAOImpl {
-	return &TennisMomentCacheDAOImpl{db: config.RDB}
+func NewLZCacheDAOImpl() *LZCacheDAOImpl {
+	return &LZCacheDAOImpl{db: config.RDB}
 }
 
 // 把设备ID和JWT添加到映射表中，并设置过期时间

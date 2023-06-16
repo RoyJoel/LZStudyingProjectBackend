@@ -7,8 +7,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/RoyJoel/LZStudyingProject/package/config"
-	model2 "github.com/RoyJoel/LZStudyingProject/package/model"
+	"github.com/RoyJoel/LZStudyingProjectBackendBackend/package/config"
+	model2 "github.com/RoyJoel/LZStudyingProjectBackendBackend/package/model"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/casbin/v2/model"
@@ -25,7 +25,7 @@ var (
 
 func init() {
 	var err error
-	adapter, err = a.NewAdapter("mysql", "root:12345678@tcp(localhost:3306)/tennismoment_app", true)
+	adapter, err = a.NewAdapter("mysql", "root:12345678@tcp(localhost:3306)/LZStudyingProjectBackend", true)
 	if err != nil {
 		log.Fatalf("error: adapter: %s", err)
 	}

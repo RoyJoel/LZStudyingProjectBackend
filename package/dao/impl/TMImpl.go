@@ -7,24 +7,24 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/RoyJoel/LZStudyingProject/package/cache"
-	"github.com/RoyJoel/LZStudyingProject/package/config"
-	"github.com/RoyJoel/LZStudyingProject/package/middleware"
-	"github.com/RoyJoel/LZStudyingProject/package/model"
-	"github.com/RoyJoel/LZStudyingProject/package/utils"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/cache"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/middleware"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/model"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/utils"
+	"github.com/RoyJoel/LZStudyingProjectBackendBackend/package/config"
 	"gorm.io/gorm"
 )
 
-type TennisMomentDaoImpl struct {
+type LZDaoImpl struct {
 	db    *gorm.DB
-	cache *cache.TennisMomentCacheDAOImpl
+	cache *cache.LZCacheDAOImpl
 }
 
-func NewTennisMomentDaoImpl() *TennisMomentDaoImpl {
-	return &TennisMomentDaoImpl{db: config.DB, cache: cache.NewTennisMomentCacheDAOImpl()}
+func NewLZDaoImpl() *LZDaoImpl {
+	return &LZDaoImpl{db: config.DB, cache: cache.NewLZCacheDAOImpl()}
 }
 
-func (impl *TennisMomentDaoImpl) AddPlayer(ctx context.Context, Player model.Player) (model.PlayerResponse, bool) {
+func (impl *LZDaoImpl) AddPlayer(ctx context.Context, Player model.Player) (model.PlayerResponse, bool) {
 
 	res := impl.SearchPlayer(ctx, Player.LoginName)
 	if !res {
@@ -39,7 +39,7 @@ func (impl *TennisMomentDaoImpl) AddPlayer(ctx context.Context, Player model.Pla
 	}
 }
 
-func (impl *TennisMomentDaoImpl) SignUp(ctx context.Context, user model.User) (model.User, bool) {
+func (impl *LZDaoImpl) SignUp(ctx context.Context, user model.User) (model.User, bool) {
 	playerInfo := model.Player{Id: user.Id, LoginName: user.LoginName, Password: user.Password, Name: user.Name, Icon: user.Icon, Sex: user.Sex, Age: user.Age, Points: user.Points}
 	player, res := impl.AddPlayer(ctx, playerInfo)
 	friends := []model.PlayerResponse{}
@@ -56,7 +56,7 @@ func (impl *TennisMomentDaoImpl) SignUp(ctx context.Context, user model.User) (m
 	user = model.User{Id: player.Id, LoginName: player.LoginName, Password: user.Password, Name: player.Name, Icon: player.Icon, Sex: player.Sex, Age: player.Age, Points: player.Points, Friends: friends, AllLikedMusic: utils.IntMatrix{}, AllOrders: utils.IntMatrix{}, Addresss: utils.IntMatrix{}, Cart: cart, DefaultAddress: model.AddressResponse{}, Token: tokenStr}
 	return user, res
 }
-func (impl *TennisMomentDaoImpl) AddCartForPlayer(ctx context.Context, playerId int64) int64 {
+func (impl *LZDaoImpl) AddCartForPlayer(ctx context.Context, playerId int64) int64 {
 	cart := model.Cart{}
 	impl.db.Where("player_id = ?", playerId).Delete(&cart)
 	newOrder := model.Order{PlayerId: playerId, State: 0}
@@ -66,14 +66,14 @@ func (impl *TennisMomentDaoImpl) AddCartForPlayer(ctx context.Context, playerId 
 	return newOrder.Id
 }
 
-func (impl *TennisMomentDaoImpl) UpdateUser(ctx context.Context, user model.User) model.User {
+func (impl *LZDaoImpl) UpdateUser(ctx context.Context, user model.User) model.User {
 	Player := model.PlayerResponse{Id: user.Id, LoginName: user.LoginName, Password: user.Password, Name: user.Name, Icon: user.Icon, Sex: user.Sex, Age: user.Age, Points: user.Points}
 	playerResponse := impl.UpdatePlayer(ctx, Player)
 
 	return model.User{Id: playerResponse.Id, LoginName: playerResponse.LoginName, Password: playerResponse.Password, Name: playerResponse.Name, Icon: playerResponse.Icon, Sex: playerResponse.Sex, Age: playerResponse.Age, Points: playerResponse.Points, Friends: user.Friends, AllLikedMusic: user.AllLikedMusic, AllOrders: user.AllOrders, Addresss: user.Addresss, Cart: user.Cart, Token: user.Token}
 }
 
-func (impl *TennisMomentDaoImpl) SignIn(ctx context.Context, userLoginName string, userPassword string) (*model.User, error) {
+func (impl *LZDaoImpl) SignIn(ctx context.Context, userLoginName string, userPassword string) (*model.User, error) {
 	player, _ := impl.GetPlayerInfoByLoginNameAndPassword(ctx, userLoginName, userPassword)
 	if player != nil {
 		friends := impl.GetAllFriends(ctx, player.Id)
@@ -95,7 +95,7 @@ func (impl *TennisMomentDaoImpl) SignIn(ctx context.Context, userLoginName strin
 	}
 }
 
-func (impl *TennisMomentDaoImpl) ResetPassword(ctx context.Context, userLoginName string, userPassword string) bool {
+func (impl *LZDaoImpl) ResetPassword(ctx context.Context, userLoginName string, userPassword string) bool {
 	var Player model.Player
 	impl.db.Where("login_name = ?", userLoginName).First(&Player)
 	if Player.LoginName == userLoginName {
@@ -106,20 +106,20 @@ func (impl *TennisMomentDaoImpl) ResetPassword(ctx context.Context, userLoginNam
 	return false
 }
 
-func (impl *TennisMomentDaoImpl) UpdatePlayer(ctx context.Context, player model.PlayerResponse) model.PlayerResponse {
+func (impl *LZDaoImpl) UpdatePlayer(ctx context.Context, player model.PlayerResponse) model.PlayerResponse {
 	Player := model.Player{Id: player.Id, LoginName: player.LoginName, Password: player.Password, Name: player.Name, Icon: player.Icon, Sex: player.Sex, Age: player.Age, Points: player.Points}
 	impl.db.Where("id = ?", player.Id).Updates(&Player)
 	impl.db.First(&Player, "id = ?", player.Id)
 	return model.PlayerResponse{Id: Player.Id, LoginName: Player.LoginName, Password: Player.Password, Name: Player.Name, Icon: Player.Icon, Sex: Player.Sex, Age: Player.Age, Points: Player.Points}
 }
 
-func (impl *TennisMomentDaoImpl) SearchPlayer(ctx context.Context, loginName string) bool {
+func (impl *LZDaoImpl) SearchPlayer(ctx context.Context, loginName string) bool {
 	var Player model.Player
 	impl.db.Where("login_name = ?", loginName).First(&Player)
 	return Player.LoginName == loginName
 }
 
-func (impl *TennisMomentDaoImpl) GetPlayerInfo(ctx context.Context, id int64) (*model.PlayerResponse, error) {
+func (impl *LZDaoImpl) GetPlayerInfo(ctx context.Context, id int64) (*model.PlayerResponse, error) {
 	var Player model.Player
 	impl.db.Where("id = ?", id).First(&Player)
 	if Player.Id == id {
@@ -128,7 +128,7 @@ func (impl *TennisMomentDaoImpl) GetPlayerInfo(ctx context.Context, id int64) (*
 	return nil, errors.New("no such player")
 }
 
-func (impl *TennisMomentDaoImpl) GetPlayerInfoByLoginName(ctx context.Context, loginName string) (*model.PlayerResponse, error) {
+func (impl *LZDaoImpl) GetPlayerInfoByLoginName(ctx context.Context, loginName string) (*model.PlayerResponse, error) {
 	var Player model.Player
 	impl.db.Where("login_name = ?", loginName).First(&Player)
 	if Player.LoginName == loginName {
@@ -137,7 +137,7 @@ func (impl *TennisMomentDaoImpl) GetPlayerInfoByLoginName(ctx context.Context, l
 	return nil, errors.New("no such player")
 }
 
-func (impl *TennisMomentDaoImpl) GetPlayerInfoByLoginNameAndPassword(ctx context.Context, loginName string, password string) (*model.PlayerResponse, error) {
+func (impl *LZDaoImpl) GetPlayerInfoByLoginNameAndPassword(ctx context.Context, loginName string, password string) (*model.PlayerResponse, error) {
 	var Player model.Player
 	fmt.Println(password)
 
@@ -161,7 +161,7 @@ func (impl *TennisMomentDaoImpl) GetPlayerInfoByLoginNameAndPassword(ctx context
 	return nil, errors.New("no such user")
 }
 
-func (impl *TennisMomentDaoImpl) GetAllFriends(ctx context.Context, id int64) []model.PlayerResponse {
+func (impl *LZDaoImpl) GetAllFriends(ctx context.Context, id int64) []model.PlayerResponse {
 	var friends []model.Player
 	var friendResponses []model.PlayerResponse
 	var relationship1 []model.Relationship
@@ -188,7 +188,7 @@ func (impl *TennisMomentDaoImpl) GetAllFriends(ctx context.Context, id int64) []
 	return friendResponses
 }
 
-func (impl *TennisMomentDaoImpl) AddFriend(ctx context.Context, relationship model.Relationship) []model.PlayerResponse {
+func (impl *LZDaoImpl) AddFriend(ctx context.Context, relationship model.Relationship) []model.PlayerResponse {
 	res := impl.SearchFriend(ctx, relationship)
 	if !res {
 		impl.db.Create(&relationship)
@@ -196,7 +196,7 @@ func (impl *TennisMomentDaoImpl) AddFriend(ctx context.Context, relationship mod
 	return impl.GetAllFriends(ctx, relationship.Player1Id)
 }
 
-func (impl *TennisMomentDaoImpl) UpdateFriend(ctx context.Context, relationship model.Relationship) []model.PlayerResponse {
+func (impl *LZDaoImpl) UpdateFriend(ctx context.Context, relationship model.Relationship) []model.PlayerResponse {
 	res1 := impl.SearchFriend(ctx, model.Relationship{Player1Id: relationship.Player2Id, Player2Id: relationship.Player1Id})
 	res2 := impl.SearchFriend(ctx, relationship)
 	if !res1 && !res2 {
@@ -206,7 +206,7 @@ func (impl *TennisMomentDaoImpl) UpdateFriend(ctx context.Context, relationship 
 	return impl.GetAllFriends(ctx, relationship.Player1Id)
 }
 
-func (impl *TennisMomentDaoImpl) UpdateFriendDB(ctx context.Context, userId int64, friends []model.PlayerResponse) []model.PlayerResponse {
+func (impl *LZDaoImpl) UpdateFriendDB(ctx context.Context, userId int64, friends []model.PlayerResponse) []model.PlayerResponse {
 	relationships := make([]model.Relationship, 0)
 	for _, friend := range friends {
 		relationship := model.Relationship{Player1Id: userId, Player2Id: friend.Id}
@@ -231,7 +231,7 @@ func (impl *TennisMomentDaoImpl) UpdateFriendDB(ctx context.Context, userId int6
 	return impl.GetAllFriends(ctx, userId)
 }
 
-func (impl *TennisMomentDaoImpl) DeleteFriend(ctx context.Context, relationship model.Relationship) []model.PlayerResponse {
+func (impl *LZDaoImpl) DeleteFriend(ctx context.Context, relationship model.Relationship) []model.PlayerResponse {
 	if impl.SearchFriend(ctx, relationship) {
 		impl.db.Where("player1_id = ? AND player2_id = ?", relationship.Player1Id, relationship.Player2Id).Delete(&relationship)
 		impl.db.Where("player1_id = ? AND player2_id = ?", relationship.Player2Id, relationship.Player1Id).Delete(&relationship)
@@ -239,7 +239,7 @@ func (impl *TennisMomentDaoImpl) DeleteFriend(ctx context.Context, relationship 
 	return impl.GetAllFriends(ctx, relationship.Player1Id)
 }
 
-func (impl *TennisMomentDaoImpl) SearchFriend(ctx context.Context, relationship model.Relationship) bool {
+func (impl *LZDaoImpl) SearchFriend(ctx context.Context, relationship model.Relationship) bool {
 	var Relationship1 model.Relationship
 	var Relationship2 model.Relationship
 	impl.db.Where("player1_id = ? AND player2_id = ?", relationship.Player1Id, relationship.Player2Id).First(&Relationship1)
@@ -248,7 +248,7 @@ func (impl *TennisMomentDaoImpl) SearchFriend(ctx context.Context, relationship 
 
 }
 
-func (impl *TennisMomentDaoImpl) GetMyMusic(ctx context.Context, playerId int64) utils.IntMatrix {
+func (impl *LZDaoImpl) GetMyMusic(ctx context.Context, playerId int64) utils.IntMatrix {
 	musicUsers := make([]model.MusicUser, 0)
 	musicResponses := utils.IntMatrix{}
 	impl.db.Where("member_id = ?", playerId).Find(&musicUsers)
@@ -259,7 +259,7 @@ func (impl *TennisMomentDaoImpl) GetMyMusic(ctx context.Context, playerId int64)
 	return musicResponses
 }
 
-func (impl *TennisMomentDaoImpl) GetMusicInfo(ctx context.Context, musicId int64) model.MusicResponse {
+func (impl *LZDaoImpl) GetMusicInfo(ctx context.Context, musicId int64) model.MusicResponse {
 	music := model.Music{}
 	impl.db.Where("id = ?", musicId).Find(&music)
 	AnimeInfo := impl.GetAnimeInfo(ctx, music.AnimeInfoId)
@@ -267,14 +267,14 @@ func (impl *TennisMomentDaoImpl) GetMusicInfo(ctx context.Context, musicId int64
 
 	return musicResponse
 }
-func (impl *TennisMomentDaoImpl) GetAnimeInfo(ctx context.Context, Id string) model.AnimeInfo {
+func (impl *LZDaoImpl) GetAnimeInfo(ctx context.Context, Id string) model.AnimeInfo {
 	animeInfo := model.AnimeInfo{}
 	impl.db.Where("id = ?", Id).First(&animeInfo)
 
 	return animeInfo
 }
 
-func (impl *TennisMomentDaoImpl) UpdateMusic(ctx context.Context, MusicUser model.MusicUser) {
+func (impl *LZDaoImpl) UpdateMusic(ctx context.Context, MusicUser model.MusicUser) {
 	clubMember := model.MusicUser{}
 	impl.db.Where("club_id = ? And member_id = ?", MusicUser.MusicId, MusicUser.PlayerId).First(&clubMember)
 	if clubMember.MusicId != MusicUser.MusicId || clubMember.PlayerId != MusicUser.PlayerId {
@@ -283,7 +283,7 @@ func (impl *TennisMomentDaoImpl) UpdateMusic(ctx context.Context, MusicUser mode
 	return
 }
 
-func (impl *TennisMomentDaoImpl) UpdateClubDB(ctx context.Context, userId int64, music utils.IntMatrix) utils.IntMatrix {
+func (impl *LZDaoImpl) UpdateClubDB(ctx context.Context, userId int64, music utils.IntMatrix) utils.IntMatrix {
 
 	var results utils.IntMatrix
 
@@ -303,13 +303,13 @@ func (impl *TennisMomentDaoImpl) UpdateClubDB(ctx context.Context, userId int64,
 	return impl.GetMyMusic(ctx, userId)
 }
 
-func (impl *TennisMomentDaoImpl) UpdateOrder(ctx context.Context, Order model.OrderResponse) model.OrderResponse {
+func (impl *LZDaoImpl) UpdateOrder(ctx context.Context, Order model.OrderResponse) model.OrderResponse {
 	order := model.Order{Id: Order.Id, ShippingAddressId: Order.ShippingAddress.Id, PlayerId: Order.PlayerId, State: Order.State, Payment: Order.Payment, CreatedTime: Order.CreatedTime, PayedTime: Order.PayedTime, CompletedTime: Order.CompletedTime}
 	impl.db.Save(&order)
 	return impl.GetOrderInfo(ctx, order.Id)
 }
 
-func (impl *TennisMomentDaoImpl) DeleteOrder(ctx context.Context, id int64) bool {
+func (impl *LZDaoImpl) DeleteOrder(ctx context.Context, id int64) bool {
 
 	order := model.Order{}
 	impl.db.Where("id = ?", id).Delete(&order)
@@ -318,7 +318,7 @@ func (impl *TennisMomentDaoImpl) DeleteOrder(ctx context.Context, id int64) bool
 
 	return true
 }
-func (impl *TennisMomentDaoImpl) GetOrderInfo(ctx context.Context, orderId int64) model.OrderResponse {
+func (impl *LZDaoImpl) GetOrderInfo(ctx context.Context, orderId int64) model.OrderResponse {
 	order := model.Order{}
 	impl.db.Where("id = ?", orderId).First(&order)
 
@@ -328,7 +328,7 @@ func (impl *TennisMomentDaoImpl) GetOrderInfo(ctx context.Context, orderId int64
 	return model.OrderResponse{Id: order.Id, Bills: bills, ShippingAddress: shippingAddress, CreatedTime: order.CreatedTime, PayedTime: order.PayedTime, CompletedTime: order.CompletedTime, State: order.State}
 }
 
-func (impl *TennisMomentDaoImpl) GetOrderInfosByUserId(ctx context.Context, playerId int64) []model.OrderResponse {
+func (impl *LZDaoImpl) GetOrderInfosByUserId(ctx context.Context, playerId int64) []model.OrderResponse {
 	orders := make([]model.Order, 0)
 	impl.db.Where("player_id = ?", playerId).Find(&orders)
 
@@ -345,7 +345,7 @@ func (impl *TennisMomentDaoImpl) GetOrderInfosByUserId(ctx context.Context, play
 	return orderResponses
 }
 
-func (impl *TennisMomentDaoImpl) AddBillToCart(ctx context.Context, bill *model.Bill) model.OrderResponse {
+func (impl *LZDaoImpl) AddBillToCart(ctx context.Context, bill *model.Bill) model.OrderResponse {
 
 	Bill := model.Bill{}
 	impl.db.Where("com_id = ? AND option_id = ? AND order_id = ?", bill.ComId, bill.OptionId, bill.OrderId).First(&Bill)
@@ -365,7 +365,7 @@ func (impl *TennisMomentDaoImpl) AddBillToCart(ctx context.Context, bill *model.
 	return *&cart
 }
 
-func (impl *TennisMomentDaoImpl) DeleteBillInCart(ctx context.Context, bill *model.Bill) model.OrderResponse {
+func (impl *LZDaoImpl) DeleteBillInCart(ctx context.Context, bill *model.Bill) model.OrderResponse {
 
 	if impl.SearchBill(ctx, bill.Id) {
 		impl.db.Where("id = ?", bill.Id).Delete(&bill)
@@ -375,7 +375,7 @@ func (impl *TennisMomentDaoImpl) DeleteBillInCart(ctx context.Context, bill *mod
 	return cart
 }
 
-func (impl *TennisMomentDaoImpl) AssignCartForUser(ctx context.Context, order model.OrderResponse) int64 {
+func (impl *LZDaoImpl) AssignCartForUser(ctx context.Context, order model.OrderResponse) int64 {
 
 	Order := model.Order{Id: order.Id, ShippingAddressId: order.ShippingAddress.Id, PlayerId: order.PlayerId, State: order.State, Payment: order.Payment, CreatedTime: order.CreatedTime, PayedTime: order.PayedTime, CompletedTime: order.CompletedTime}
 	impl.db.Save(&Order)
@@ -389,7 +389,7 @@ func (impl *TennisMomentDaoImpl) AssignCartForUser(ctx context.Context, order mo
 
 }
 
-func (impl *TennisMomentDaoImpl) GetAllCommodities(ctx context.Context) []model.CommodityResponse {
+func (impl *LZDaoImpl) GetAllCommodities(ctx context.Context) []model.CommodityResponse {
 	commodities := make([]model.Commodity, 0)
 	impl.db.Find(&commodities)
 
@@ -402,7 +402,7 @@ func (impl *TennisMomentDaoImpl) GetAllCommodities(ctx context.Context) []model.
 	return CommodityResponses
 }
 
-func (impl *TennisMomentDaoImpl) GetAllOrders(ctx context.Context) []model.OrderResponse {
+func (impl *LZDaoImpl) GetAllOrders(ctx context.Context) []model.OrderResponse {
 	orders := make([]model.Order, 0)
 	impl.db.Find(&orders)
 
@@ -415,7 +415,7 @@ func (impl *TennisMomentDaoImpl) GetAllOrders(ctx context.Context) []model.Order
 	return orderResponses
 }
 
-func (impl *TennisMomentDaoImpl) GetBillInfos(ctx context.Context, orderId int64) []model.BillResponse {
+func (impl *LZDaoImpl) GetBillInfos(ctx context.Context, orderId int64) []model.BillResponse {
 	bills := make([]model.Bill, 0)
 	impl.db.Where("order_id = ?", orderId).Find(&bills)
 
@@ -430,21 +430,21 @@ func (impl *TennisMomentDaoImpl) GetBillInfos(ctx context.Context, orderId int64
 	return billResponses
 }
 
-func (impl *TennisMomentDaoImpl) GetOptionInfo(ctx context.Context, optionId int64) model.OptionResponse {
+func (impl *LZDaoImpl) GetOptionInfo(ctx context.Context, optionId int64) model.OptionResponse {
 	option := model.Option{}
 	impl.db.Where("id = ?", optionId).First(&option)
 
 	return model.OptionResponse{Id: option.Id, Image: option.Image, Intro: option.Intro, Price: option.Price, Inventory: option.Inventory}
 }
 
-func (impl *TennisMomentDaoImpl) GetAddressInfo(ctx context.Context, addressId int64) model.AddressResponse {
+func (impl *LZDaoImpl) GetAddressInfo(ctx context.Context, addressId int64) model.AddressResponse {
 	address := model.Address{}
 	impl.db.Where("id = ?", addressId).First(&address)
 	addressResponse := model.AddressResponse{Id: address.Id, Name: address.Name, Sex: address.Sex, PhoneNumber: address.PhoneNumber, Province: address.Province, City: address.City, Area: address.Area, DetailAddress: address.DetailedAddress, IsDefault: address.IsDefault}
 	return addressResponse
 }
 
-func (impl *TennisMomentDaoImpl) AddOrder(ctx context.Context, Order model.OrderResponse) int64 {
+func (impl *LZDaoImpl) AddOrder(ctx context.Context, Order model.OrderResponse) int64 {
 
 	newOrder := model.Order{}
 	impl.db.Create(&newOrder)
@@ -457,13 +457,13 @@ func (impl *TennisMomentDaoImpl) AddOrder(ctx context.Context, Order model.Order
 	return order.Id
 }
 
-func (impl *TennisMomentDaoImpl) SearchOrder(ctx context.Context, id int64) bool {
+func (impl *LZDaoImpl) SearchOrder(ctx context.Context, id int64) bool {
 	var Order model.Order
 	impl.db.Where("id = ?", id).First(&Order)
 	return Order.Id == id
 }
 
-func (impl *TennisMomentDaoImpl) AddAddress(ctx context.Context, address model.Address) model.AddressResponse {
+func (impl *LZDaoImpl) AddAddress(ctx context.Context, address model.Address) model.AddressResponse {
 
 	newAddress := model.Address{}
 	impl.db.Create(&newAddress)
@@ -472,13 +472,13 @@ func (impl *TennisMomentDaoImpl) AddAddress(ctx context.Context, address model.A
 	return model.AddressResponse{Id: address.Id, Name: address.Name, Sex: address.Sex, PhoneNumber: address.PhoneNumber, Province: address.Province, City: address.City, Area: address.Area, DetailAddress: address.DetailedAddress, IsDefault: address.IsDefault}
 }
 
-func (impl *TennisMomentDaoImpl) SearchAddress(ctx context.Context, id int64) bool {
+func (impl *LZDaoImpl) SearchAddress(ctx context.Context, id int64) bool {
 	var Address model.Address
 	impl.db.Where("id = ?", id).First(&Address)
 	return Address.Id == id
 }
 
-func (impl *TennisMomentDaoImpl) UpdateAddress(ctx context.Context, updatingAddress model.Address) model.AddressResponse {
+func (impl *LZDaoImpl) UpdateAddress(ctx context.Context, updatingAddress model.Address) model.AddressResponse {
 	impl.db.Save(&updatingAddress)
 	addresss := impl.GetMyAddresss(ctx, updatingAddress.PlayerId)
 	for _, address := range addresss {
@@ -492,13 +492,13 @@ func (impl *TennisMomentDaoImpl) UpdateAddress(ctx context.Context, updatingAddr
 	return impl.GetAddressInfo(ctx, updatingAddress.Id)
 }
 
-func (impl *TennisMomentDaoImpl) DeleteAddress(ctx context.Context, id int64) bool {
+func (impl *LZDaoImpl) DeleteAddress(ctx context.Context, id int64) bool {
 	address := model.Address{}
 	impl.db.Where("id = ?", id).Delete(&address)
 	return true
 }
 
-func (impl *TennisMomentDaoImpl) AddBill(ctx context.Context, bill model.Bill) model.Bill {
+func (impl *LZDaoImpl) AddBill(ctx context.Context, bill model.Bill) model.Bill {
 
 	newBill := model.Bill{}
 	impl.db.Create(&newBill)
@@ -507,12 +507,12 @@ func (impl *TennisMomentDaoImpl) AddBill(ctx context.Context, bill model.Bill) m
 	return bill
 }
 
-func (impl *TennisMomentDaoImpl) UpdateBill(ctx context.Context, userId int64, Bill model.Bill) model.BillResponse {
+func (impl *LZDaoImpl) UpdateBill(ctx context.Context, userId int64, Bill model.Bill) model.BillResponse {
 	impl.db.Save(&Bill)
 	return impl.GetBillInfo(ctx, Bill.Id)
 }
 
-func (impl *TennisMomentDaoImpl) GetBillInfo(ctx context.Context, billId int64) model.BillResponse {
+func (impl *LZDaoImpl) GetBillInfo(ctx context.Context, billId int64) model.BillResponse {
 	bill := model.Bill{}
 	impl.db.Where("id = ?", billId).First(&bill)
 	com := impl.GetCommodityInfo(ctx, bill.ComId)
@@ -520,13 +520,13 @@ func (impl *TennisMomentDaoImpl) GetBillInfo(ctx context.Context, billId int64) 
 	billResponse := model.BillResponse{Id: bill.Id, Com: com, Quantity: bill.Quantity, Option: option}
 	return billResponse
 }
-func (impl *TennisMomentDaoImpl) SearchBill(ctx context.Context, id int64) bool {
+func (impl *LZDaoImpl) SearchBill(ctx context.Context, id int64) bool {
 	var bill model.Bill
 	impl.db.Where("id = ?", id).First(&bill)
 	return bill.Id == id
 }
 
-func (impl *TennisMomentDaoImpl) AddCommodity(ctx context.Context, Commodity model.CommodityResponse) model.CommodityResponse {
+func (impl *LZDaoImpl) AddCommodity(ctx context.Context, Commodity model.CommodityResponse) model.CommodityResponse {
 
 	newCommodity := model.Commodity{}
 	impl.db.Create(&newCommodity)
@@ -542,7 +542,7 @@ func (impl *TennisMomentDaoImpl) AddCommodity(ctx context.Context, Commodity mod
 	return Commodity
 }
 
-func (impl *TennisMomentDaoImpl) AddOption(ctx context.Context, option model.OptionResponse, comId int64) []model.OptionResponse {
+func (impl *LZDaoImpl) AddOption(ctx context.Context, option model.OptionResponse, comId int64) []model.OptionResponse {
 	newOption := model.Option{}
 	impl.db.Create(&newOption)
 	newOption.Image = option.Image
@@ -555,7 +555,7 @@ func (impl *TennisMomentDaoImpl) AddOption(ctx context.Context, option model.Opt
 	return impl.GetOptionsForCommidity(ctx, comId)
 }
 
-func (impl *TennisMomentDaoImpl) DeleteCommodity(ctx context.Context, id int64) []model.CommodityResponse {
+func (impl *LZDaoImpl) DeleteCommodity(ctx context.Context, id int64) []model.CommodityResponse {
 	commodity := model.Commodity{}
 	impl.db.Where("id = ?", id).Delete(&commodity)
 	option := model.Option{}
@@ -563,7 +563,7 @@ func (impl *TennisMomentDaoImpl) DeleteCommodity(ctx context.Context, id int64) 
 	return impl.GetAllCommodities(ctx)
 }
 
-func (impl *TennisMomentDaoImpl) DeleteOption(ctx context.Context, id int64) []model.OptionResponse {
+func (impl *LZDaoImpl) DeleteOption(ctx context.Context, id int64) []model.OptionResponse {
 	Option := model.Option{}
 	OptionRequest := model.Option{}
 	impl.db.Where("id = ?", id).Find(&Option)
@@ -571,7 +571,7 @@ func (impl *TennisMomentDaoImpl) DeleteOption(ctx context.Context, id int64) []m
 	return impl.GetOptionsForCommidity(ctx, Option.ComId)
 }
 
-func (impl *TennisMomentDaoImpl) UpdateCommodity(ctx context.Context, CommodityResponse model.CommodityResponse) model.CommodityResponse {
+func (impl *LZDaoImpl) UpdateCommodity(ctx context.Context, CommodityResponse model.CommodityResponse) model.CommodityResponse {
 	Commodity := model.Commodity{Id: CommodityResponse.Id, Name: CommodityResponse.Name, Intro: CommodityResponse.Intro, Cag: CommodityResponse.Cag, State: CommodityResponse.State}
 	impl.db.Save(&Commodity)
 	for _, option := range CommodityResponse.Options {
@@ -580,13 +580,13 @@ func (impl *TennisMomentDaoImpl) UpdateCommodity(ctx context.Context, CommodityR
 	return impl.GetCommodityInfo(ctx, Commodity.Id)
 }
 
-func (impl *TennisMomentDaoImpl) UpdateOption(ctx context.Context, OptionResponse model.OptionResponse, comId int64) []model.OptionResponse {
+func (impl *LZDaoImpl) UpdateOption(ctx context.Context, OptionResponse model.OptionResponse, comId int64) []model.OptionResponse {
 	Option := model.Option{Id: OptionResponse.Id, Image: OptionResponse.Image, Intro: OptionResponse.Intro, Price: OptionResponse.Price, Inventory: OptionResponse.Inventory, ComId: comId}
 	impl.db.Save(&Option)
 	return impl.GetOptionsForCommidity(ctx, comId)
 }
 
-func (impl *TennisMomentDaoImpl) GetCommodityInfo(ctx context.Context, CommodityId int64) model.CommodityResponse {
+func (impl *LZDaoImpl) GetCommodityInfo(ctx context.Context, CommodityId int64) model.CommodityResponse {
 	Commodity := model.Commodity{}
 	impl.db.Where("id = ?", CommodityId).First(&Commodity)
 	orders := impl.GetOrderNumForCommodity(ctx, Commodity.Id)
@@ -594,13 +594,13 @@ func (impl *TennisMomentDaoImpl) GetCommodityInfo(ctx context.Context, Commodity
 	return model.CommodityResponse{Id: Commodity.Id, Name: Commodity.Name, Intro: Commodity.Intro, Cag: Commodity.Cag, Orders: orders, Options: options, State: Commodity.State}
 }
 
-func (impl *TennisMomentDaoImpl) GetCommoditySimpleInfo(ctx context.Context, CommodityId int64) model.Commodity {
+func (impl *LZDaoImpl) GetCommoditySimpleInfo(ctx context.Context, CommodityId int64) model.Commodity {
 	Commodity := model.Commodity{}
 	impl.db.Where("id = ?", CommodityId).First(&Commodity)
 	return Commodity
 }
 
-func (impl *TennisMomentDaoImpl) GetOrderNumForCommodity(ctx context.Context, CommodityId int64) int64 {
+func (impl *LZDaoImpl) GetOrderNumForCommodity(ctx context.Context, CommodityId int64) int64 {
 	bills := make([]model.Bill, 0)
 	impl.db.Where("id = ?", CommodityId).Find(&bills)
 	var num int64
@@ -610,7 +610,7 @@ func (impl *TennisMomentDaoImpl) GetOrderNumForCommodity(ctx context.Context, Co
 	return num
 }
 
-func (impl *TennisMomentDaoImpl) GetOptionsForCommidity(ctx context.Context, CommodityId int64) []model.OptionResponse {
+func (impl *LZDaoImpl) GetOptionsForCommidity(ctx context.Context, CommodityId int64) []model.OptionResponse {
 	options := make([]model.Option, 0)
 	impl.db.Where("com_id = ?", CommodityId).Find(&options)
 
@@ -622,13 +622,13 @@ func (impl *TennisMomentDaoImpl) GetOptionsForCommidity(ctx context.Context, Com
 	return optionResponses
 }
 
-func (impl *TennisMomentDaoImpl) SearchCommodity(ctx context.Context, id int64) bool {
+func (impl *LZDaoImpl) SearchCommodity(ctx context.Context, id int64) bool {
 	var Commodity model.Commodity
 	impl.db.Where("id = ?", id).First(&Commodity)
 	return Commodity.Id == id
 }
 
-func (impl *TennisMomentDaoImpl) GetMyOrders(ctx context.Context, playerId int64) utils.IntMatrix {
+func (impl *LZDaoImpl) GetMyOrders(ctx context.Context, playerId int64) utils.IntMatrix {
 	orders := make([]model.Order, 0)
 	orderResponses := utils.IntMatrix{}
 	impl.db.Where("player_id = ?", playerId).Find(&orders)
@@ -639,7 +639,7 @@ func (impl *TennisMomentDaoImpl) GetMyOrders(ctx context.Context, playerId int64
 	return orderResponses
 }
 
-func (impl *TennisMomentDaoImpl) GetMyAddresss(ctx context.Context, playerId int64) utils.IntMatrix {
+func (impl *LZDaoImpl) GetMyAddresss(ctx context.Context, playerId int64) utils.IntMatrix {
 	addresss := make([]model.Address, 0)
 	addressResponses := utils.IntMatrix{}
 	impl.db.Where("player_id = ?", playerId).Find(&addresss)
@@ -649,14 +649,14 @@ func (impl *TennisMomentDaoImpl) GetMyAddresss(ctx context.Context, playerId int
 	}
 	return addressResponses
 }
-func (impl *TennisMomentDaoImpl) GetMyDefaultAddress(ctx context.Context, playerId int64) model.AddressResponse {
+func (impl *LZDaoImpl) GetMyDefaultAddress(ctx context.Context, playerId int64) model.AddressResponse {
 	address := model.Address{}
 	impl.db.Where("player_id = ? AND is_default = ?", playerId, 1).Find(&address)
 	addressResponse := model.AddressResponse{Id: address.Id, Name: address.Name, Sex: address.Sex, PhoneNumber: address.PhoneNumber, Province: address.Province, City: address.City, Area: address.Area, DetailAddress: address.DetailedAddress, IsDefault: address.IsDefault}
 	return addressResponse
 }
 
-func (impl *TennisMomentDaoImpl) GetMyCart(ctx context.Context, playerId int64) int64 {
+func (impl *LZDaoImpl) GetMyCart(ctx context.Context, playerId int64) int64 {
 	cart := model.Cart{}
 	impl.db.Where("player_id = ?", playerId).First(&cart)
 	return cart.OrderId

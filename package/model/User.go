@@ -3,7 +3,7 @@ package model
 import (
 	"encoding/json"
 
-	"github.com/RoyJoel/LZStudyingProject/package/utils"
+	"github.com/RoyJoel/LZStudyingProjectBackend/package/utils"
 )
 
 type User struct {

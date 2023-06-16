@@ -12,8 +12,8 @@ import (
 )
 
 var (
-	SecretKey = []byte("TennisMoment")
-	Issuer    = "TennisMoment"
+	SecretKey = []byte("LZ")
+	Issuer    = "LZ"
 	ExpireAt  = time.Hour * 24 * 60
 )
 

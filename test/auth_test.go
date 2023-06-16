@@ -3,7 +3,7 @@ package test
 import (
 	"testing"
 
-	"github.com/RoyJoel/LZStudyingProject/package/web/auth"
+	"github.com/RoyJoel/LZStudyingProjectBackendBackend/package/web/auth"
 )
 
 func TestAuth(t *testing.T) {

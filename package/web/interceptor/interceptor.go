@@ -1,7 +1,7 @@
 package interceptor
 
 import (
-	// "github.com/RoyJoel/LZStudyingProject/package/web/auth"
+	// "github.com/RoyJoel/LZStudyingProjectBackend/package/web/auth"
 	"github.com/gin-gonic/gin"
 	// "github.com/spf13/cast"
 )

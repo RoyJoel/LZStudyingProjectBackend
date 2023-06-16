@@ -1,4 +1,4 @@
-module github.com/RoyJoel/TennisMomentBackEnd
+module github.com/RoyJoel/LZStudyingProjectBackendBackend
 
 go 1.20
 
